@@ -6,6 +6,9 @@ It is also important to keep consistent the number of VM created.
 # Preparetion
 - Just make sure to have template
 - Write down the image ID in the env.yaml file
+- In order to have 60 seconds for the "cpu" Ceilometer meters you need to load the pipeline file:
+  - "Ceilometer/pipeline_kilo.yaml" Ceilometer Pipeline for OpenStack Kilo, load into the compute node (usually at /etc/ceilometer/pipeline.yaml) and restart the Ceilometer Compute Agent (usually ceilometer-compute-agent)
+  - "Ceilometer/pipeline_since_liberty.yaml" Ceilometer Pipeline for OpenStack Liberty, Mitaka and Newton, load into the compute node (usually at /etc/ceilometer/pipeline.yaml) and restart the Ceilometer Compute Agent (usually ceilometer-compute-agent)
 
 # How to load it
 ```
