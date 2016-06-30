@@ -1,0 +1,40 @@
+---
+heat_template_version: 2015-04-30
+
+description: HOT for server creation
+
+parameters:
+  flavor:
+    type: string
+    description: Flavor to use for servers (no_disk)
+  image:
+    type: string
+    description: Name of image to use for servers (Fedora23)
+  image_id:
+    type: string
+    description: Image ID to use for servers
+  network_id:
+    type: string
+    description: Network ID that comes from the stack
+  random_id:
+    type: string
+    description: Random ID to idenfiy each VM
+
+resources:
+  Instance:
+    type: OS::Nova::Server
+    properties:
+      # image: { get_param: image }
+      flavor: { get_param: flavor }
+      networks:
+        - network: { get_param: network_id }
+      block_device_mapping_v2: 
+        -
+          boot_index: 0
+          delete_on_termination: true
+          device_name: vda
+          image_id: { get_param: image_id }
+          volume_size: 10
+      metadata:
+        # metering.stack: {get_param: "OS::stack_id"}
+        metering.stack: {get_param: random_id}

@@ -1,0 +1,108 @@
+---
+heat_template_version: 2015-04-30
+
+description: HOT for AutoScaling when missing samples
+
+parameters:
+  network_id:
+    type: string
+    description: Network ID that comes from the stack
+
+resources:
+  RandomString:
+    type: OS::Heat::RandomString
+    properties:
+      length: 32
+      sequence: lettersdigits
+
+  ScalingGroup:
+    type: OS::Heat::AutoScalingGroup
+    properties:
+      cooldown: 60
+      desired_capacity: 1
+      max_size: 3
+      min_size: 1
+      resource:
+        type: OS::VM::Fedora
+        properties:
+          network_id: {get_param: network_id}
+          random_id: {get_attr: [RandomString, value]}
+          #flavor: { get_param: flavor }
+          #image: { get_param: image }
+          #image_id: { get_param: image_id }
+
+  HAPolicy:
+    type: OS::Heat::ScalingPolicy
+    properties:
+      adjustment_type: change_in_capacity
+      auto_scaling_group_id: { get_resource: ScalingGroup }
+      cooldown: 60
+      scaling_adjustment: 1
+
+  BackToNormalPolicy:
+    type: OS::Heat::ScalingPolicy
+    properties:
+      adjustment_type: change_in_capacity
+      auto_scaling_group_id: { get_resource: ScalingGroup }
+      cooldown: 60
+      scaling_adjustment: -1
+
+  MissingSample:
+    type: OS::Ceilometer::Alarm
+    properties:
+      description: >
+        When the CPU samples for the Group is not available
+        it means that the Physical Host is DOWN or Ceilometer ComputeAgent DOWN.
+        Both of the condictions will trigger a new VM creation.
+      meter_name: cpu
+      statistic: avg
+      period: 60
+      evaluation_periods: 3
+      threshold: 1
+      insufficient_data_actions:
+        - {get_attr: [HAPolicy, alarm_url]}
+      comparison_operator: lt
+      repeat_actions: false
+      matching_metadata:
+        user_metadata.stack:  {get_attr: [RandomString, value]}
+
+  NoExecution:
+    type: OS::Ceilometer::Alarm
+    properties:
+      description: When the meter cpu is lower than 1, it means there is not computational execution anymore
+      description: >
+        When the CPU samples for the Group are lower than 1.0
+        it means that the VM is down (but not Physical Host nor Ceilometer ComputeAgent).
+        It went down due to some application checks.
+        This will trigger a new VM creation.
+      meter_name: cpu
+      statistic: avg
+      period: 60
+      evaluation_periods: 3
+      threshold: 1
+      alarm_actions:
+        - {get_attr: [HAPolicy, alarm_url]}
+      comparison_operator: lt
+      repeat_actions: false
+      matching_metadata:
+        user_metadata.stack: {get_attr: [RandomString, value]}
+
+  BackToNormal:
+    type: OS::Ceilometer::Alarm
+    properties:
+      description: When the meter cpu is lower than 1, it means there is not computational execution anymore
+      description: >
+        When the CPU samples for the Group are higher than 1.0
+        it means that the VM is up.
+        This will trigger a VM termination.
+      meter_name: cpu
+      statistic: avg
+      period: 60
+      evaluation_periods: 3
+      threshold: 1
+      alarm_actions:
+        - {get_attr: [BackToNormalPolicy, alarm_url]}
+      comparison_operator: gt
+      repeat_actions: false
+      matching_metadata:
+        user_metadata.stack: {get_attr: [RandomString, value]}
