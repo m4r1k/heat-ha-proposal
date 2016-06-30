@@ -1,19 +1,14 @@
 ---
 heat_template_version: 2015-04-30
 
-description: HOT for AutoScaling when missing samples
-
-
-###### TODO ######
-# Kill VM in a gracefull way
-# AntiAffinity rules
-# HA: Make sure that if a host goes down, the scaling down will not delete the just created VM
+description: HOT to have a consistent number of VM
 
 resources:
   Network:
     type: OS::Neutron::Net
     properties:
       admin_state_up: true
+
   Subnet:
     type: OS::Neutron::Subnet
     properties:
@@ -22,21 +17,23 @@ resources:
       enable_dhcp: true
       gateway_ip: 10.10.10.1
       network_id: { get_resource: Network }
+
   Router:
     type: OS::Neutron::Router
     properties:
       admin_state_up: true
+
   _routerport:
     type: OS::Neutron::RouterInterface
     properties:
       router_id: { get_resource: Router }
       subnet_id: { get_resource: Subnet }
+
   InitGroup:
     type: OS::Heat::ResourceGroup
     properties:
       count: 2
       resource_def:
-        type: OS::Scaling::Fedora
+        type: OS::VM::LifeCycle
         properties:
           network_id: {get_resource: Network }
-          #network_id: {get_attr: [Subnet, network_id]}

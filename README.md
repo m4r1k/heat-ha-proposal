@@ -3,6 +3,16 @@ This README document has the intent to explain the logic behind the HA Procedure
 Background and requirements: this solution has been designed with the absolutely requirement to be agentless and to relay only on the OpenStack environment, such as Nova and Ceilometer.
 It is also important to keep consistent the number of VM created.
 
+# Preparetion
+- Just make sure to have template
+- Write down the image ID in the env.yaml file
+
+# How to load it
+```
+$ source <environment file>
+$ heat stack-create --template-file ./init.yaml --environment-file ./env.yaml LifeCycleStack
+```
+
 # Time Zero
 At Time0 the template has been loaded into Heat.
 The heat engine processed it and the result respects what has been written in the HOT files.

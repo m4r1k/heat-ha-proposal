@@ -24,10 +24,12 @@ resources:
   Instance:
     type: OS::Nova::Server
     properties:
+      # Uncomment the following section if traditional boot workload is required
       # image: { get_param: image }
       flavor: { get_param: flavor }
       networks:
         - network: { get_param: network_id }
+      # Comment the following section if Boot from volume is not required/possible
       block_device_mapping_v2: 
         -
           boot_index: 0

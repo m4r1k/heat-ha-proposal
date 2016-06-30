@@ -23,13 +23,10 @@ resources:
       max_size: 3
       min_size: 1
       resource:
-        type: OS::VM::Fedora
+        type: OS::VM::Init
         properties:
           network_id: {get_param: network_id}
           random_id: {get_attr: [RandomString, value]}
-          #flavor: { get_param: flavor }
-          #image: { get_param: image }
-          #image_id: { get_param: image_id }
 
   HAPolicy:
     type: OS::Heat::ScalingPolicy
