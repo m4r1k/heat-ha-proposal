@@ -12,6 +12,7 @@ sources:
           - "cpu"
       sinks:
           - cpu_sink
+          - meter_sink
     - name: disk_source
       interval: 600
       meters:

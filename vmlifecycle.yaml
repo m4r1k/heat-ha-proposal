@@ -34,7 +34,7 @@ resources:
       adjustment_type: change_in_capacity
       auto_scaling_group_id: { get_resource: ScalingGroup }
       cooldown: 60
-      scaling_adjustment: 1
+      scaling_adjustment: +1
 
   BackToNormalPolicy:
     type: OS::Heat::ScalingPolicy
@@ -61,12 +61,11 @@ resources:
       comparison_operator: lt
       repeat_actions: false
       matching_metadata:
-        user_metadata.stack:  {get_attr: [RandomString, value]}
+        user_metadata.stack: {get_attr: [RandomString, value]}
 
   NoExecution:
     type: OS::Ceilometer::Alarm
     properties:
-      description: When the meter cpu is lower than 1, it means there is not computational execution anymore
       description: >
         When the CPU samples for the Group are lower than 1.0
         it means that the VM is down (but not Physical Host nor Ceilometer ComputeAgent).
@@ -87,7 +86,6 @@ resources:
   BackToNormal:
     type: OS::Ceilometer::Alarm
     properties:
-      description: When the meter cpu is lower than 1, it means there is not computational execution anymore
       description: >
         When the CPU samples for the Group are higher than 1.0
         it means that the VM is up.

@@ -41,7 +41,7 @@ At Time1b the Ceilometer alarm for each VM (3x Ceilometer alarm for VM) will rep
 These alarms are called: NoExecution and MissingSamples.
 Also a special alarm for the Time2 is now in OK status. 
 
-# Time One C (TIME1b + 1 minute)
+# Time One C (TIME1b + about 1 minute)
 At Time1c the previously triggered alarm have created one VM in replacement of the deaths one.
 
 # Time Two (TIME1c + 3 minutes)
