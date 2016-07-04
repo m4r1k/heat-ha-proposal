@@ -1,0 +1,13 @@
+--- /usr/lib/python2.7/site-packages/heat/engine/resources/openstack/heat/scaling_policy.py     2016-07-01 04:41:06.605073809 -0400
++++ /usr/lib/python2.7/site-packages/heat/engine/resources/openstack/heat/scaling_policy.py.patched     2016-07-01 04:40:52.939072986 -0400
+@@ -124,8 +124,8 @@
+         LOG.info(_LI('Alarm %(name)s, new state %(state)s'),
+                  {'name': self.name, 'state': alarm_state})
+
+-        if alarm_state != 'alarm':
+-            raise resource.NoActionRequired()
++        #if alarm_state != 'alarm':
++        #    raise resource.NoActionRequired()
+         if self._cooldown_inprogress():
+             LOG.info(_LI("%(name)s NOT performing scaling action, "
+                          "cooldown %(cooldown)s"),
