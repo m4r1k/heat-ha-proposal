@@ -98,6 +98,6 @@ resources:
       alarm_actions:
         - {get_attr: [BackToNormalPolicy, alarm_url]}
       comparison_operator: gt
-      repeat_actions: false
+      repeat_actions: true
       matching_metadata:
         user_metadata.stack: {get_attr: [RandomString, value]}
