@@ -45,7 +45,7 @@ resources:
       scaling_adjustment: -1
 
   MissingSample:
-    type: OS::Ceilometer::Alarm
+    type: OS::Ceilometer::CombinationAlarm
     properties:
       description: >
         When the CPU samples for the Group is not available
@@ -64,7 +64,7 @@ resources:
         user_metadata.stack: {get_attr: [RandomString, value]}
 
   NoExecution:
-    type: OS::Ceilometer::Alarm
+    type: OS::Ceilometer::CombinationAlarm
     properties:
       description: >
         When the CPU samples for the Group are lower than 1.0
@@ -84,7 +84,7 @@ resources:
         user_metadata.stack: {get_attr: [RandomString, value]}
 
   BackToNormal:
-    type: OS::Ceilometer::Alarm
+    type: OS::Ceilometer::CombinationAlarm
     properties:
       description: >
         When the CPU samples for the Group are higher than 1.0
